@@ -8,6 +8,9 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    const ADMIN_TYPE = 'admin';
+    const TEAM_TYPE = 'team';
+
     use Notifiable;
 
     /**
@@ -36,4 +39,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function isAdmin(){        
+        return $this->type === self::ADMIN_TYPE;
+        // требуем доложить тип пользователя    
+    }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,23 @@ Route::group(['middleware' => ['web']], function () {
         ]);
     });
 
+    Route::get('/', function () {
+        return view('welcome', [
+            'tasks' => Task::orderBy('created_at', 'asc')->get(),
+        ]);
+    });
+    Route::get('/dash', function () {
+        return view('tasks', [
+            'tasks' => Task::orderBy('created_at', 'asc')->get(),
+        ]); 
+    })
+    ->middleware('is_admin')    
+    ->name('admin');
+    
+    # не забываем добавить авторизацию и возможность разлогироваться
+    
+    Auth::routes();
+    Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
     /**
      * Add New Task
      */
@@ -94,3 +112,6 @@ Route::group(['middleware' => ['web']], function () {
         return redirect('/');
     });
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
